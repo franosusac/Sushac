@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Itaka — Otok Odiseja</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Trajan+Pro:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8cc80;
+    --deep-blue: #0a1628;
+    --mid-blue: #0d2244;
+    --ocean: #1a4a6e;
+    --sea: #2a7fbd;
+    --foam: #e8f4f8;
+    --sand: #f2e6c8;
+    --terracotta: #b5603a;
+    --ivory: #faf6ec;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep-blue);
+    color: var(--ivory);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 4rem;
+    background: linear-gradient(to bottom, rgba(10,22,40,0.95), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sand);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--gold-light); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 70%, rgba(26,74,110,0.6) 0%, transparent 70%),
+      radial-gradient(ellipse at 20% 30%, rgba(42,127,189,0.2) 0%, transparent 50%),
+      linear-gradient(175deg, #0a1628 0%, #0d2244 40%, #1a3a5c 70%, #0f2a45 100%);
+  }
+
+  .wave-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.15;
+  }
+  .wave-lines::before, .wave-lines::after {
+    content: '';
+    position: absolute;
+    left: -50%;
+    width: 200%;
+    height: 4px;
+    border-radius: 50%;
+  }
+  .wave-lines::before {
+    top: 60%;
+    background: radial-gradient(ellipse 50% 20px at 50% 50%, var(--sea) 0%, transparent 100%);
+    animation: wave 8s ease-in-out infinite;
+  }
+  .wave-lines::after {
+    top: 65%;
+    background: radial-gradient(ellipse 50% 15px at 50% 50%, var(--gold) 0%, transparent 100%);
+    animation: wave 12s ease-in-out infinite reverse;
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: translateX(0) scaleY(1); }
+    50% { transform: translateX(-5%) scaleY(2); }
+  }
+
+  .stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 10%, rgba(255,255,220,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 5%, rgba(255,255,220,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 15%, rgba(255,255,220,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 8%, rgba(255,255,220,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 20%, rgba(255,255,220,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 25%, rgba(255,255,220,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 30%, rgba(255,255,220,0.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 45% 12%, rgba(201,168,76,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 22%, rgba(255,255,220,0.5) 0%, transparent 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    animation: fadeUp 1.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 1;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 40%, #8a6520 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    text-shadow: none;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    letter-spacing: 0.3em;
+    color: var(--sand);
+    opacity: 0.7;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .hero-divider::before, .hero-divider::after {
+    content: '';
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .hero-divider::after { background: linear-gradient(to left, transparent, var(--gold)); }
+  .hero-divider-symbol { color: var(--gold); font-size: 1.2rem; }
+
+  .hero-desc {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--foam);
+    max-width: 520px;
+    line-height: 1.7;
+    margin: 0 auto 3rem;
+    opacity: 0.85;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.5;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .scroll-hint span { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+  .scroll-arrow { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent); }
+
+  @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  section { position: relative; }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+  }
+
+  .ornament {
+    display: block;
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.5rem;
+    letter-spacing: 0.5em;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .section-label {
+    display: block;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+
+  .section-heading {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    text-align: center;
+    color: var(--gold-light);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .section-intro {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--foam);
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 4rem;
+    line-height: 1.8;
+    opacity: 0.85;
+  }
+
+  /* ── ODYSSEUS SPEAKS ── */
+  .odysseus-section {
+    padding: 8rem 0;
+    background: linear-gradient(180deg, var(--deep-blue) 0%, var(--mid-blue) 50%, var(--deep-blue) 100%);
+  }
+
+  .quote-block {
+    position: relative;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 4rem 5rem;
+    border: 1px solid rgba(201,168,76,0.2);
+    background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, rgba(26,74,110,0.15) 100%);
+  }
+
+  .quote-block::before, .quote-block::after {
+    content: '';
+    position: absolute;
+    width: 30px; height: 30px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.6;
+  }
+  .quote-block::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .quote-block::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .quote-mark {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 6rem;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 0.5;
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+  }
+
+  .quote-text {
+    font-size: 1.3rem;
+    line-height: 1.9;
+    color: var(--ivory);
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-text p { margin-bottom: 1.2rem; }
+  .quote-text p:last-child { margin-bottom: 0; }
+
+  .quote-attribution {
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .quote-attribution::before {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+    opacity: 0.4;
+  }
+  .quote-attribution-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+
+  /* ── BEACH GALLERY ── */
+  .beaches-section {
+    padding: 8rem 0;
+    background: linear-gradient(180deg, var(--deep-blue) 0%, #071020 100%);
+  }
+
+  .beaches-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-bottom: 5rem;
+  }
+
+  .beach-card {
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+  }
+
+  .beach-card:nth-child(1) { grid-row: span 2; }
+  .beach-card:nth-child(4) { grid-column: span 2; }
+
+  .beach-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 300px;
+    display: block;
+    transition: transform 0.8s ease;
+    filter: saturate(0.85) brightness(0.85);
+  }
+  .beach-card:hover img { transform: scale(1.06); filter: saturate(1) brightness(0.9); }
+
+  .beach-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.1) 50%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    transition: background 0.4s;
+  }
+
+  .beach-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 0.4rem;
+  }
+  .beach-desc {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--sand);
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+  .beach-tag {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.7rem;
+    border: 1px solid rgba(201,168,76,0.4);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── HISTORY SECTION ── */
+  .history-section {
+    padding: 8rem 0;
+    background: linear-gradient(180deg, #071020 0%, var(--mid-blue) 100%);
+  }
+
+  .history-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    margin-top: 4rem;
+  }
+
+  .history-col h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .history-col p {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--foam);
+    opacity: 0.85;
+    margin-bottom: 1.2rem;
+  }
+
+  .timeline {
+    margin-top: 4rem;
+    position: relative;
+    padding-left: 2rem;
+    border-left: 1px solid rgba(201,168,76,0.3);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-left: 1.5rem;
+    animation: fadeIn 0.8s ease both;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2.55rem;
+    top: 0.4rem;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 12px var(--gold);
+  }
+
+  .timeline-date {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-item h4 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.95rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-item p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--foam);
+    opacity: 0.8;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    padding: 7rem 0;
+    background: linear-gradient(180deg, var(--mid-blue) 0%, var(--deep-blue) 100%);
+    text-align: center;
+  }
+
+  .phone-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 2.5rem auto;
+    padding: 1.5rem 3.5rem;
+    border: 1px solid rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.05);
+    position: relative;
+  }
+
+  .phone-display::before, .phone-display::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .phone-display::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .phone-display::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .phone-icon { font-size: 1.8rem; }
+
+  .phone-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+  }
+
+  .phone-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sand);
+    opacity: 0.7;
+    margin-top: 0.5rem;
+  }
+
+  .contact-note {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--foam);
+    opacity: 0.6;
+    margin-top: 1.5rem;
+    max-width: 400px;
+    margin: 1.5rem auto 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 3rem 4rem;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--deep-blue);
+  }
+
+  footer .logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+  }
+
+  footer p {
+    font-size: 0.8rem;
+    color: var(--sand);
+    opacity: 0.4;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── REVEAL ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .greek-border {
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px, var(--gold) 8px,
+      transparent 8px, transparent 12px,
+      var(--gold) 12px, var(--gold) 16px,
+      transparent 16px, transparent 24px
+    );
+    opacity: 0.3;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .beaches-grid { grid-template-columns: 1fr; }
+    .beach-card:nth-child(1) { grid-row: auto; }
+    .beach-card:nth-child(4) { grid-column: auto; }
+    .history-cols { grid-template-columns: 1fr; gap: 2.5rem; }
+    .quote-block { padding: 3rem 2rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGACIJA -->
+<nav>
+  <a href="#" class="nav-logo">⚓ Itaka</a>
+  <ul class="nav-links">
+    <li><a href="#odysseus">Odisej</a></li>
+    <li><a href="#beaches">Plaže</a></li>
+    <li><a href="#history">Povijest</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="wave-lines"></div>
+  <div class="stars"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Grčki Otok Legende</p>
+    <h1 class="hero-title">ITAKA</h1>
+    <p class="hero-subtitle">Ithaca · Ιθάκη</p>
+    <div class="hero-divider"><span class="hero-divider-symbol">⚜</span></div>
+    <p class="hero-desc">Sveti otok junaka, vječni dom Odiseja — gdje Jonsko more ljulja kraljevstvo rođeno iz mita.</p>
+  </div>
+  <div class="scroll-hint">
+    <span>Istraži</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<div class="greek-border"></div>
+
+<!-- ODISEJ GOVORI -->
+<section class="odysseus-section" id="odysseus">
+  <div class="section-inner">
+    <span class="ornament">〜 ✦ 〜</span>
+    <span class="section-label">Kralj Govori</span>
+    <h2 class="section-heading reveal">Odisej Predstavlja Itaku</h2>
+    <p class="section-intro reveal">Veliki putnik, sin Laertov, kralj Itake — nakon dvadeset godina i bezbroj iskušenja — vraća se govoriti o svom voljenom domu.</p>
+
+    <div class="quote-block reveal">
+      <span class="quote-mark">"</span>
+      <div class="quote-text">
+        <p>Ja sam Odisej — Odysseus onima koji su čitali o mojim lutanjima. Plovio sam pokraj Sirena, gledao obale vještice Kirke, sišao u carstvo mrtvih, i ipak — <em>ipak</em> — svaka mi je misao bila okrenuta kući. Prema Itaki.</p>
+        <p>Moj otok nije najveći, niti najravniji. Uzdiže se iz Jonskog mora u hrapavim stijenama i šuštavim maslinicima, uvijek mirisaveći na sol i majčinu dušicu i onu posebnu slatkoću mjesta koje te voli uzvrat. Brežuljci koji okružuju Vathyjev zaljev drže jutarnju maglu kao majka drži dijete koje spava. Razumjet ćeš to čim stigneš.</p>
+        <p>Ima ovdje plaža koje su i sami bogovi obljubili — uvale gdje voda prelazi iz smaragdne u safirnu ovisno o satu dana, gdje možeš ležati na bijelom šljunku i čuti samo vječni razgovor mora sa stijenom. Mirnim večerima sunce zalazi iza Kefalonie i boja naše nebo svim nijansama jantara i ruže koje ni sam Homer nije mogao dovoljno opisati.</p>
+        <p>Dođi. Vidi zašto bi čovjek izazvao Posejdonov gnjev, Polifemovu špilju i deset godina nezahvalnog rata — samo da se vrati na jedan kameniti mali otok u Jonskom moru. <em>Itaka vrijedi svaku odiseju.</em></p>
+      </div>
+      <div class="quote-attribution">
+        <span class="quote-attribution-name">Odisej · Kralj Itake · Sin Laertov</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="greek-border"></div>
+
+<!-- PLAŽE -->
+<section class="beaches-section" id="beaches">
+  <div class="section-inner">
+    <span class="ornament">〜 ✦ 〜</span>
+    <span class="section-label">Svete Obale</span>
+    <h2 class="section-heading reveal">Plaže Itake</h2>
+    <p class="section-intro reveal">Šest božanskih uvala, svaka tajnom otoka — tirkizne vode nad bijelim šljunkom, zaštićene stijenama i maslinama. Otkrij ih kao što ih je Odisej otkrio davno.</p>
+  </div>
+
+  <div class="beaches-grid">
+    <!-- 1 — visoka kartica -->
+    <div class="beach-card">
+      <img src="https://images.greeka.com/greece/ithaca/beaches/ithaca-gidaki-beach/photos/ithaca-gidaki-beach-photo-001.jpg?size=xl" alt="Plaža Gidaki" loading="lazy">
+      <div class="beach-overlay">
+        <div class="beach-name">Uvala Ksilokeriza</div>
+        <div class="beach-desc">Najudaljenija uvala na otoku, dostupna isključivo morem. Smaragdne vode i katedralne stijene koje odjekuju zvukom valova.</div>
+        <div class="beach-tag">Divlja · Udaljena · Mitska</div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="beach-card">
+      <img src="https://images.greeka.com/greece/ithaca/beaches/ithaca-gidaki-beach/photos/ithaca-gidaki-beach-photo-002.jpg?size=xl" alt="Plaža plave vode" loading="lazy">
+      <div class="beach-overlay">
+        <div class="beach-name">Uvala Akropelagos</div>
+        <div class="beach-desc">Gdje se more produbljuje do najčišćeg indiga. Stari su vjerovali da je upravo ovdje Posejdon promatrao obalu.</div>
+        <div class="beach-tag">Duboka · Plava · Sveta</div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="beach-card">
+      <img src="https://images.greeka.com/greece/ithaca/ithaca-photo-001.jpg?size=xl" alt="Obala Itake" loading="lazy">
+      <div class="beach-overlay">
+        <div class="beach-name">Obala Thalassomata</div>
+        <div class="beach-desc">Smještena ispod starih pastirskih staza — šljunčani polumjesec tišine s pogledom prema dalekoj Kefaliniji.</div>
+        <div class="beach-tag">Panoramska · Mirna</div>
+      </div>
+    </div>
+
+    <!-- 4 — široka kartica -->
+    <div class="beach-card">
+      <img src="https://images.greeka.com/greece/ithaca/ithaca-photo-002.jpg?size=xl" alt="Panorama Itake" loading="lazy">
+      <div class="beach-overlay">
+        <div class="beach-name">Plaža Odisejion</div>
+        <div class="beach-desc">Nazvana u čast lutajućeg kralja. Legenda kaže da je Odisej ovdje zaplovio na obalu pri posljednjem povratku. Najšira bijela šljunčana plaža na otoku, savršena za kupanje u zalasku sunca.</div>
+        <div class="beach-tag">Legendarna · Zalazak · Kupanje</div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="beach-card">
+      <img src="https://www.greeka.com/photos/greece/ithaca/ithaca-photo-001.jpg?size=xl" alt="Selo na Itaci" loading="lazy" onerror="this.src='https://images.greeka.com/greece/ithaca/beaches/ithaca-gidaki-beach/photos/ithaca-gidaki-beach-photo-001.jpg?size=m'">
+      <div class="beach-overlay">
+        <div class="beach-name">Penelopin Odmor</div>
+        <div class="beach-desc">Tiha sjeverna uvala gdje ribari još uvijek krpe mreže u zoru — najintimnija plaža na otoku.</div>
+        <div class="beach-tag">Mirna · Ribarstvo · Skrivena</div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="beach-card">
+      <img src="https://images.greeka.com/greece/ithaca/ithaca-photo-003.jpg?size=xl" alt="Selo na Itaci" loading="lazy" onerror="this.src='https://images.greeka.com/greece/ithaca/beaches/ithaca-gidaki-beach/photos/ithaca-gidaki-beach-photo-002.jpg?size=m'">
+      <div class="beach-overlay">
+        <div class="beach-name">Laertova Uvala</div>
+        <div class="beach-desc">Skrovita plaža uz vrt gdje je Odisejev stari otac uzgajao svoje vinograde iznad mora. Kristalno čista voda, gotovo bez posjetitelja.</div>
+        <div class="beach-tag">Tajna · Kristalna · Spokojno</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="greek-border"></div>
+
+<!-- POVIJEST -->
+<section class="history-section" id="history">
+  <div class="section-inner">
+    <span class="ornament">〜 ✦ 〜</span>
+    <span class="section-label">Kroz Stoljeća</span>
+    <h2 class="section-heading reveal">Grčka Povijest Itake</h2>
+    <p class="section-intro reveal">Itaka je naseljena od brončanog doba — raskrižje trgovine, mitologije i jonske kulture koje seže više od tri tisućljeća unatrag.</p>
+
+    <div class="history-cols">
+      <div class="reveal">
+        <h3>Mikenska Era</h3>
+        <p>Arheološki dokazi smještaju prvu značajnu naseljenost Itake u kasno brončano doba, oko 1400.–1200. pr. Kr. Otok je bio dio šireg mikenskog svijeta — one ratničke civilizacije čiji će kolaps Homer kasnije ovjekovječiti u Ilijadi i Odiseji.</p>
+        <p>Iskopavanja u blizini Stavrosa na sjeveru otoka otkrila su kultno svetište s zavjetnim darovima koji nose natpise posvećene „Odiseju". Tronošci — predmeti opisani u Odiseji kao blago junakove palače — pronađeni su među ostacima, dajući izvanrednu težinu mitološkoj tradiciji.</p>
+
+        <h3 style="margin-top:2rem;">Arhaično i Klasično Razdoblje</h3>
+        <p>Nakon propasti brončanog doba, Itaka se ponovo pojavila kao skromna, ali strateški smještena zajednica u Jonskom moru. Do 8. stoljeća pr. Kr. — ere u kojoj je Homer sastavio (ili prikupio) Odiseju — Itaka je već nosila težinu legende. Korintska keramika pronađena na otoku potvrđuje trgovinske veze s kopnenom Grčkom za arhaičnog razdoblja.</p>
+        <p>Za klasičnog doba, Itaka se uglavnom vezivala uz Korint i širi grčki svijet za Perzijskih ratova, no njezina mala veličina ograničavala je politički utjecaj.</p>
+      </div>
+
+      <div class="reveal">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date">oko 3000. pr. Kr.</div>
+            <h4>Naselja Ranog Brončanog Doba</h4>
+            <p>Prvi tragovi ljudskog naselja na otoku, mala poljoprivredna i ribarska naselja duž sjevernih zaljeva.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">oko 1400.–1200. pr. Kr.</div>
+            <h4>Mikensko Kraljevstvo</h4>
+            <p>Itaka cvjeta kao mikensko dvorsko društvo. Legendarno doba Odiseja i Trojanskog rata. Kultno svetište u Stavrosu štuje heroja-kralja otoka.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">oko 800. pr. Kr.</div>
+            <h4>Homer Piše Odiseju</h4>
+            <p>Odiseja ovjekovječuje Itaku kao čežnjom priželjkivani dom najvećeg putnika u zapadnoj književnosti, zauvijek učvršćujući mitološku slavu otoka.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">229. pr. Kr.</div>
+            <h4>Rimski Protektorat</h4>
+            <p>Itaka, zajedno s ostatkom Jonskih otoka, dolazi pod rimski utjecaj. Otok je dokumentiran kao Ithace u rimskim administrativnim zapisima.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">1797.</div>
+            <h4>Francuska i Britanska Vlast</h4>
+            <p>Nakon stoljeća bizantske, normanske i mletačke vlasti, Jonski otoci nakratko prelaze pod Napoleonovu Francusku, a zatim pod britanski protektorat 1815. godine.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">1864.</div>
+            <h4>Ujedinjenje s Grčkom</h4>
+            <p>Jonski otoci — uključujući Itaku — formalno su ujedinjeni s modernom grčkom državom, dovršavajući dugo putovanje Itake kući, baš poput njezina najslavnijeg sina.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="greek-border"></div>
+
+<!-- KONTAKT -->
+<section class="contact-section" id="contact">
+  <div class="section-inner">
+    <span class="ornament">〜 ✦ 〜</span>
+    <span class="section-label">Podrška Za Posjetitelje</span>
+    <h2 class="section-heading reveal">Planiraj Svoju Odiseju</h2>
+    <p class="section-intro reveal" style="margin-bottom:0;">Naši otočki vodiči spremni su pomoći ti da započneš putovanje na Itaku — bilo da tražiš plaže, povijest ili duh ovog mjesta.</p>
+
+    <div class="phone-display reveal">
+      <span class="phone-icon">☎</span>
+      <div>
+        <div class="phone-number">+30 26740 33 191</div>
+        <div class="phone-label">Itaka — Linija Za Posjetitelje</div>
+      </div>
+    </div>
+
+    <p class="contact-note reveal">Otvoreno svaki dan, od izlaska do zalaska sunca. Naši vodiči govore grčki, engleski i drevni jezik gostoprimstva.</p>
+  </div>
+</section>
+
+<!-- PODNOŽJE -->
+<footer>
+  <span class="logo">⚓ ITAKA</span>
+  <p>Vječni dom Odiseja · Jonsko more, Grčka</p>
+  <p>© 2026 Turistička Zajednica Itake</p>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  window.addEventListener('scroll', () => {
+    const hero = document.querySelector('.hero-content');
+    const scrolled = window.scrollY;
+    if (hero && scrolled < window.innerHeight) {
+      hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+      hero.style.opacity = 1 - scrolled / (window.innerHeight * 0.8);
+    }
+  });
+</script>
+</body>
+</html>
